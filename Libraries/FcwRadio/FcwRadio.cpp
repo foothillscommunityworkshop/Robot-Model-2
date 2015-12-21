@@ -15,21 +15,26 @@ volatile bool isSlaveMode = false;
 
 void check_radio()
 {
+    //Store the reg item
     uint8_t oldSREG = SREG;
+    
+    //Disable Interrupts while we are listen
     cli ();
+    
+    //If Radio is avaiable we processed.
     if (radio.available())
     {
+        //Get the sent data and assign it.
         char buf[32];
         uint8_t numBytes = radio.read(buf, sizeof(buf));
         
-        //Need to figure out what we need to do here for the output. 
+        //Need to figure out what we need to do here for a output.
         String TempString = String(buf);
         slaveCommand = ( String)TempString;
-        
-        //slaveCommand[0] = buf[1];
-        
+     
     }
    // sei ();
+    //Assign the reg the saved items.
     SREG = oldSREG;
 }
 
@@ -45,6 +50,8 @@ String GetSlaveCommand()
 
 bool SendCommand(char* command)
 {
+    //If we are sending command then we want to discount the Interrupt or we
+    // will not be able to send data.
     detachInterrupt(radioInterrupt);
     bool sent = radio.send(0xD2, command);
     return sent;
@@ -53,6 +60,8 @@ bool SendCommand(char* command)
 
 void RadioSetup(int cePin, int csPin)
 {
+    //Setup the pin's and start to listen
+    //and attach the interrupts.
     radio.begin(cePin, csPin);
     radio.setAddress(0xD2);
     radio.startListening();
