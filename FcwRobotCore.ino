@@ -26,17 +26,25 @@
 
 const int TooClose = 300;
 
+//Pin Senor 
 const int EchoPin = 2;
 const int TrigPin = 4;
+
+//Buzzer 
 const int BuzzerPin = 7;
+
+//Mode button
 const int ModeButton = 8;
 
+//Radio 
 const int radioPinCe = 9;
 const int radioPinCs = 10;
 
+//Servo's
 const int RServoPin = 5;
 const int LServoPin = 6;
 
+//Create Buzzer object
 PiezoBuzzer piezoBuzzer(BuzzerPin);
 
 void setup() {
@@ -48,8 +56,10 @@ void setup() {
   //We are setting the radios to listen on the Channel.
  RadioSetup(radioPinCe, radioPinCs);
 
+ //Setup the Servo's to be used
  FcwServoSetup(RServoPin, LServoPin);
 
+ //Setup the Pin sensor for use. 
  PingSensorSetup(TrigPin,EchoPin);
    
   Serial.begin (115200);  
@@ -57,33 +67,35 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
+
+ //Test to make sure the we are not to close to something 
 if (CurrentDuration() < TooClose)
-        {
-          TurnRandom();
-         piezoBuzzer.Beep(1);
-          Serial.println("turn");
-          Serial.print("Dur:");
-          Serial.println(CurrentDuration());
-        }
-        else
-        {
-          //Run straight
-          Serial.println("Run");
-          Serial.print("Dur:");
-          Serial.println(CurrentDuration());
-          Run(1);
-        }
+  {
+    //Turn Random 
+      TurnRandom();
+      piezoBuzzer.Beep(1);
+      Serial.println("turn");
+      Serial.print("Dur:");
+      Serial.println(CurrentDuration());
+  }
+  else
+  {
+    //Run straight
+     Run(1);
+     Serial.println("Run");
+     Serial.print("Dur:");
+     Serial.println(CurrentDuration());  
+  }
 
-       Serial.print("SlaveCommand:");
-       Serial.println(GetSlaveCommand());
-
-       if(GetSlaveCommand() == "A")
-       {
-         piezoBuzzer.Beep(2);
-  
+ // Get the current slave command. If its A then beep
+  if(GetSlaveCommand() == "A")
+  {
+      piezoBuzzer.Beep(2);
+  }
         delay(500);
 
   /*      
+//Create and send 3 different letters as slave commands.       
 SendCommand("A");
 delay(500);
 SendCommand("B");
