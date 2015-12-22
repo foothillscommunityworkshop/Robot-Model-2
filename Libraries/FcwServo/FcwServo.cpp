@@ -61,3 +61,16 @@ void Run(int FB) {
     }
 }
 
+void ProcessMove(int moveCommand)
+{
+    if(moveCommand >= 2 && moveCommand < 3)
+    {
+        Run(moveCommand);
+    }
+    else if(moveCommand > 2)
+    {
+        Turn(moveCommand);
+    }
+   
+}
+

@@ -49,7 +49,11 @@ bool SendCommand(char* command)
     //If we are sending command then we want to discount the Interrupt or we
     // will not be able to send data.
     detachInterrupt(radioInterrupt);
-    bool sent = radio.send(0xD2, command);
+    
+    //We are broadcasting this instead of sending. as its a send and forget.
+    //We might want to try each as we could test against if ayone is reciveing and turn off master if no one is. 
+    bool sent = radio.broadcast(command);
+   // bool sent = radio.send(0xD2, command);
     return sent;
 }
 
@@ -82,7 +86,7 @@ String GetMoveCommand()
 {
     
     //Parse out the move command.
-    String moveCommand = slaveCommand.substring(slaveCommand.indexOf(':'),slaveCommand.indexOf('['));
+    String moveCommand = slaveCommand.substring(slaveCommand.indexOf(':'),slaveCommand.length());
     
     //Test for a NULL command
     if(moveCommand != "NULL")
@@ -93,6 +97,8 @@ String GetMoveCommand()
     
 }
 
+
+//Not going to use this at this point, leaving just incase I change how i want it to work.
 int GetMoveTimer()
 {
     //Parse the int timer from the string

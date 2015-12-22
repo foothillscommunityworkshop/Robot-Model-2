@@ -4,18 +4,20 @@
  *    
  * PingSensor:   
  *    PingSensorSetup(TrigPin,EchoPin);
- *    CurrentDuration();
+ *    int CurrentDuration();
  *    
  * ModeButton:   
  *    ModeButtonSetup(ModeButton);
- *    GetButtonCount();
+ *    int GetButtonCount();
  *    
  * FcwRadio:   
  *     RadioSetup(radioPinCe, radioPinCs);
- *     SendCommand(Char*);
- *     GetSlaveCommand();
+ *     SendCommand(String);
+ *     String GetSlaveCommand();
+ *     String GetMoveCommand();
+ *     int GetMoveTimer();
  *     
- *     //Sample move command A:F[200]
+ *     //Sample move command A:F
  *     
  */
 
@@ -84,7 +86,7 @@ void loop() {
 //Temp here for testing output  
 Serial.print("SlaveCommand:");
 Serial.println(GetSlaveCommand());
-
+//Temp here for testing output 
 Serial.print("Button:");
 Serial.println(GetButtonCount());
 
@@ -114,7 +116,7 @@ Serial.println(GetButtonCount());
   {
     Serial.println("Master Mode"); 
     //Lets send some commands and Dance
-     
+     MasterMode();
   }
   else
   {
