@@ -44,6 +44,14 @@ const int radioPinCs = 10;
 const int RServoPin = 5;
 const int LServoPin = 6;
 
+//Temp Modes
+String FREERANGE = "A";
+String DANCE = "B";
+String MODE3 = "C";
+const int NOCOMMANDMODE = 0;
+const int MASTERMODE = 1;
+const int SLAVEMODE = 2;
+
 //Create Buzzer object
 PiezoBuzzer piezoBuzzer(BuzzerPin);
 
@@ -52,6 +60,9 @@ void setup() {
 
  //Onboard LED
   pinMode(13, OUTPUT);
+
+  //Setup ModeButton 
+  ModeButtonSetup(ModeButton);
 
   //We are setting the radios to listen on the Channel.
  RadioSetup(radioPinCe, radioPinCs);
@@ -67,45 +78,80 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-
- //Test to make sure the we are not to close to something 
-if (CurrentDuration() < TooClose)
+Serial.print("SlaveCommand:");
+Serial.println(GetSlaveCommand());
+  if( GetButtonCount() == NOCOMMANDMODE)
   {
-    //Turn Random 
-      TurnRandom();
-      piezoBuzzer.Beep(1);
-      Serial.println("turn");
-      Serial.print("Dur:");
-      Serial.println(CurrentDuration());
+    if(GetSlaveCommand() == FREERANGE)
+    {
+      FreeRangeMode();
+    }
+    else if(GetSlaveCommand() == DANCE)
+    {
+       DanceMode();
+    }
+    else if(GetSlaveCommand() == MODE3)
+    {
+       Serial.println("Mode3");
+       // piezoBuzzer.Beep(1);
+    }
+    else
+    {
+       Serial.println("ELSE");
+       //Beep ?
+    }
+  }
+  else if(GetButtonCount() == MASTERMODE)
+  {
+    Serial.println("Master Mode");  
   }
   else
   {
-    //Run straight
-     Run(1);
-     Serial.println("Run");
-     Serial.print("Dur:");
-     Serial.println(CurrentDuration());  
+    Serial.print("ButtonCount:");
+    Serial.println(GetButtonCount());
   }
-
- // Get the current slave command. If its A then beep
-  if(GetSlaveCommand() == "A")
-  {
-      piezoBuzzer.Beep(2);
-  }
-        delay(500);
-
-  /*      
-//Create and send 3 different letters as slave commands.       
-SendCommand("A");
-delay(500);
-SendCommand("B");
-delay(500);
-SendCommand("C");
-*/
-        //faking a work load 
-     //   delay(500);
+  
+  
+  delay(200);   
 }
 
+void FreeRangeMode()
+{
+   if (CurrentDuration() < TooClose)
+    {
+      //Turn Random 
+     //   TurnRandom();
+    //    piezoBuzzer.Beep(1);
+        Serial.println("turn");
+        Serial.print("Dur:");
+        Serial.println(CurrentDuration());
+    }
+    else
+    {
+      //Run straight
+    //   Run(1);
+       Serial.println("Run");
+       Serial.print("Dur:");
+       Serial.println(CurrentDuration());  
+    }
+}
+
+void DanceMode()
+{
+  Serial.println("Backward");
+    //Run(2);
+}
+
+
+void programMasterBot()
+{       
+  //Create and send 3 different letters as slave commands.       
+  SendCommand("A");
+  delay(500);
+  SendCommand("B");
+  delay(500);
+  SendCommand("C");
+}
 
 
 
