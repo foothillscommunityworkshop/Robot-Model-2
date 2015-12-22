@@ -10,7 +10,7 @@ NRF24 radio;
 
 const int radioInterrupt = 1; //This tranlates to Pin 3
 volatile bool isSlaveMode = false;
- String slaveCommand;
+String slaveCommand;
 
 
 void check_radio()
@@ -38,15 +38,11 @@ void check_radio()
     SREG = oldSREG;
 }
 
-void SetSlaveCommand(char* command)
+void SetSlaveCommand(String command)
 {
-    slaveCommand[0] = command[0];
+    slaveCommand = command;
 }
 
-String GetSlaveCommand()
-{
-    return slaveCommand;
-}
 
 bool SendCommand(char* command)
 {
@@ -67,4 +63,43 @@ void RadioSetup(int cePin, int csPin)
     radio.startListening();
     attachInterrupt(radioInterrupt, check_radio, LOW);
 }
+
+String GetSlaveCommand()
+{
+    //Parse the command from the received string.
+    String command  = slaveCommand.substring(0, 1);
+    
+    //Test to make sure we hae an command if not then send the freeRange command.
+    if(command.length() > 0)
+    {
+        return command;
+    }
+    return "A";
+}
+
+
+String GetMoveCommand()
+{
+    
+    //Parse out the move command.
+    String moveCommand = slaveCommand.substring(slaveCommand.indexOf(':'),slaveCommand.indexOf('['));
+    
+    //Test for a NULL command
+    if(moveCommand != "NULL")
+    {
+        return moveCommand;
+    }
+    return "";
+    
+}
+
+int GetMoveTimer()
+{
+    //Parse the int timer from the string
+    String moveTimerString = slaveCommand.substring(slaveCommand.indexOf('[') + 1 ,slaveCommand.indexOf(']'));
+    //Convert the string into a int.
+    int moveTimerInt = moveTimerString.toInt();
+    return moveTimerInt;
+}
+
 

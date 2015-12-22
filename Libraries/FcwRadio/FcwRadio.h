@@ -6,5 +6,9 @@ void RadioSetup(int cePin, int csPin);
 bool SendCommand(char* command);
 
 String GetSlaveCommand();
-void SetSlaveCommand(char* command);
+void SetSlaveCommand(String command);
+
+String GetMoveCommand();
+int GetMoveTimer();
+
 #endif

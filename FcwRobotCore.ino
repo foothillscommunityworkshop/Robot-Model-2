@@ -15,6 +15,8 @@
  *     SendCommand(Char*);
  *     GetSlaveCommand();
  *     
+ *     //Sample move command A:F[200]
+ *     
  */
 
 #include "PiezoBuzzer.h"
@@ -22,9 +24,9 @@
 #include "ModeButton.h"
 #include "FcwRadio.h"
 #include "FcwServo.h"
+#include "FcwHelper.h"
 
 
-const int TooClose = 300;
 
 //Pin Senor 
 const int EchoPin = 2;
@@ -61,8 +63,8 @@ void setup() {
  //Onboard LED
   pinMode(13, OUTPUT);
 
-  //Setup ModeButton 
-  ModeButtonSetup(ModeButton);
+ //Setup ModeButton 
+ ModeButtonSetup(ModeButton);
 
   //We are setting the radios to listen on the Channel.
  RadioSetup(radioPinCe, radioPinCs);
@@ -78,15 +80,22 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
+
+//Temp here for testing output  
 Serial.print("SlaveCommand:");
 Serial.println(GetSlaveCommand());
+
+Serial.print("Button:");
+Serial.println(GetButtonCount());
+
+
   if( GetButtonCount() == NOCOMMANDMODE)
   {
-    if(GetSlaveCommand() == FREERANGE)
+    if(GetSlaveCommand() == FREERANGE)//We just moving at will
     {
       FreeRangeMode();
     }
-    else if(GetSlaveCommand() == DANCE)
+    else if(GetSlaveCommand() == DANCE)//We are listening for commands
     {
        DanceMode();
     }
@@ -97,17 +106,19 @@ Serial.println(GetSlaveCommand());
     }
     else
     {
-       Serial.println("ELSE");
+       Serial.println("Mode ELSE ");
        //Beep ?
     }
   }
-  else if(GetButtonCount() == MASTERMODE)
+  else if(GetButtonCount() == MASTERMODE) //We are the moster now
   {
-    Serial.println("Master Mode");  
+    Serial.println("Master Mode"); 
+    //Lets send some commands and Dance
+     
   }
   else
   {
-    Serial.print("ButtonCount:");
+    Serial.print("ButtonCount ELSE OUTLOOP:");
     Serial.println(GetButtonCount());
   }
   
@@ -115,38 +126,12 @@ Serial.println(GetSlaveCommand());
   delay(200);   
 }
 
-void FreeRangeMode()
-{
-   if (CurrentDuration() < TooClose)
-    {
-      //Turn Random 
-     //   TurnRandom();
-    //    piezoBuzzer.Beep(1);
-        Serial.println("turn");
-        Serial.print("Dur:");
-        Serial.println(CurrentDuration());
-    }
-    else
-    {
-      //Run straight
-    //   Run(1);
-       Serial.println("Run");
-       Serial.print("Dur:");
-       Serial.println(CurrentDuration());  
-    }
-}
-
-void DanceMode()
-{
-  Serial.println("Backward");
-    //Run(2);
-}
 
 
 void programMasterBot()
 {       
   //Create and send 3 different letters as slave commands.       
-  SendCommand("A");
+  SendCommand("A:F[100]");
   delay(500);
   SendCommand("B");
   delay(500);

@@ -63,5 +63,9 @@ ISR (PCINT0_vect) {
 
 int GetButtonCount()
 {
-    return buttonCounter;
+    if(buttonCounter >= 0)
+    {
+        return buttonCounter;
+    }
+    return 0;
 }
