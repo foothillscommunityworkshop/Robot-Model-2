@@ -16,10 +16,10 @@ String slaveCommand;
 void check_radio()
 {
     //Store the reg item
-    uint8_t oldSREG = SREG;
+    //uint8_t oldSREG = SREG;
     
     //Disable Interrupts while we are listen
-    cli ();
+    //cli ();
     
     //If Radio is avaiable we processed.
     if (radio.available())
@@ -35,7 +35,7 @@ void check_radio()
     }
    // sei ();
     //Assign the reg the saved items.
-    SREG = oldSREG;
+  //  SREG = oldSREG;
 }
 
 void SetSlaveCommand(String command)
@@ -53,7 +53,7 @@ bool SendCommand(char* command)
     //We are broadcasting this instead of sending. as its a send and forget.
     //We might want to try each as we could test against if ayone is reciveing and turn off master if no one is. 
     bool sent = radio.broadcast(command);
-   // bool sent = radio.send(0xD2, command);
+  //  bool sent = radio.send(0xD2, command);
     return sent;
 }
 
@@ -81,34 +81,10 @@ String GetSlaveCommand()
     return "A";
 }
 
-
-int GetMoveCommand()
+String GetMoveCommand()
 {
-    
     //Parse out the move command.
     String moveCommand = slaveCommand.substring(slaveCommand.indexOf(':'),slaveCommand.length());
-    
-    //Convert command to int
-    int moveInt = moveCommand.toInt();
-    
-    //Test for a valid command
-    if(moveInt > 0)
-    {
-        return moveInt;
-    }
-    return 1;
-    
+    return moveCommand;
 }
-
-
-//Not going to use this at this point, leaving just incase I change how i want it to work.
-int GetMoveTimer()
-{
-    //Parse the int timer from the string
-    String moveTimerString = slaveCommand.substring(slaveCommand.indexOf('[') + 1 ,slaveCommand.indexOf(']'));
-    //Convert the string into a int.
-    int moveTimerInt = moveTimerString.toInt();
-    return moveTimerInt;
-}
-
 

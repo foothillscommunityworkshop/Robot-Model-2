@@ -61,6 +61,7 @@ const int SLAVEMODE = 2;
 
 void setup() {
   // put your setup code here, to run once:
+
  
  //Setup PiezoBuzzer
  PiezoBuzzerSetup(BuzzerPin);
@@ -87,8 +88,8 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
 
-    DebugOutput("SlaveCommand:",GetSlaveCommand());
-    DebugOutput("ButtonCount:",String(GetButtonCount()));
+//    DebugOutput("SlaveCommand:",GetSlaveCommand());
+//    DebugOutput("ButtonCount:",String(GetButtonCount()));
 
   if( GetButtonCount() == NOCOMMANDMODE)
   {
@@ -100,20 +101,18 @@ void loop() {
     else if(GetSlaveCommand() == DANCE)//We are listening for commands
     {
        DebugOutput("DanceMode","");
-       
-       int moveInt = GetMoveCommand(); 
-       DebugOutput("MoveCommand:",String(GetMoveCommand()));
-       
-       DanceMode(moveInt);       
+       DanceMode();       
     }
     else if(GetSlaveCommand() == MODE3)
     {
        DebugOutput("Mode3","");
        Beep(1);
+       ResetToStartUpMode();
     }
     else
     {
       DebugOutput("Outer Else Mode","");
+      ResetToStartUpMode();
     }
   }
   else if(GetButtonCount() == MASTERMODE) //We are the moster now
@@ -125,10 +124,11 @@ void loop() {
   else
   {
     DebugOutput("Outer Else Loop ButtonCount:",String(GetButtonCount()));
+    ResetToStartUpMode();
   }
   
   
-  delay(200);   
+  delay(50);   
 }
 
 

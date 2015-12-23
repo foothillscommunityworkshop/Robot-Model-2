@@ -13,11 +13,8 @@ typedef  struct {
     String DMove;
     int DNum;
 } DanceMove;
-const DanceMove DMoves[] = {{"1", 1000}, {"2",500}, {"3",1500}, {"4",1500}};
+const DanceMove DMoves[] = {{"1", 2000}, {"2",1500}, {"3",1500}, {"4",1500}};
 
-long DanceStartTime;
-long DanceDiffTime;
-int TIMEOUT = 3000;
 bool _debugMode = false;
 
 void FreeRangeMode()
@@ -45,59 +42,47 @@ void FreeRangeMode()
 
 void MasterMode()
 {
-    DebugOutput("Enter MasterMode","");
-    for (int i; i < 4; i++)
-    {
-        DanceMove move1 = DMoves[i];
-        
-        //B = slave mode
-        String command = "B:";
-        command.concat(move1.DMove);
-        
-        char commandToSend[command.length() + 1];
-        command.toCharArray(commandToSend, command.length() + 1);
-        
-        DebugOutput("Master Command To send:",String(commandToSend));
-        //Send Command to the Slave bots
-        SendCommand(commandToSend);
-        
-        DebugOutput("Master, command to process:",move1.DMove);
-        //Process the Command ourself
-        ProcessMove(move1.DMove.toInt());
-        
-        DebugOutput("Master command delay:",String(move1.DNum));
-        //Delay for the move.
-        delay(move1.DNum);
-    }
+    //Beep Enter master mode
+  //  Beep(3);
     
+    DebugOutput("Enter MasterMode","");
 
+    //Send Command to the Slave bots
+    bool sent = SendCommand("B");
+    
+    DanceMoveProcessing();
+
+    //Beep to show leaving Master Mode
+   // Beep(6);
+ 
+
+    
+    
     //Exit Master mode after the Dance is over
     ResetToStartUpMode();
 
 }
 
-
-void DanceMode(int move)
+void DanceMoveProcessing()
 {
-    //We need to have a timer between commands.
-    //If we dont get a new one after XX amount of time
-    //We revert back to freeRange
-    long currentTime = millis();
-    
-    DanceDiffTime = currentTime - DanceStartTime;
-    
-    //If we are not timeouted sense the last command.
-    if(DanceDiffTime < TIMEOUT)
+    Beep(3);
+    for (int i; i < 4; i++)
     {
-        ProcessMove(move);
-        DanceStartTime = currentTime;
+        DanceMove move1 = DMoves[i];
+        ProcessMove(move1.DMove.toInt());
+        delay(move1.DNum);
     }
-    else
-    {
-        ResetToStartUpMode();
-    }
-   
+    Beep(6);
+}
+
+void DanceMode()
+{
+    DebugOutput("DanceMove Moving","");
     
+    DanceMoveProcessing();
+    
+    ResetToStartUpMode();
+  
 }
 
 void DebugSetUp(bool setup)
@@ -121,12 +106,12 @@ void DebugOutput(String  stringOutType ,String outputString)
 
 void ResetToStartUpMode()
 {
+    
     DebugOutput("Reset to StartMode","");
     //Reset the robot back to startup mode.
-    DanceDiffTime = 0;
     SetButtonCount(0);
     SetSlaveCommand("A");
-
+   
 }
 
 

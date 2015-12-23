@@ -6,7 +6,7 @@
 void FreeRangeMode();
 void MasterMode();
 void DanceMode();
-void DanceMode(int move);
+void DanceMoveProcessing();
 void ResetToStartUpMode();
 void DebugSetUp(bool setup);
 void DebugOutput(String  stringOutType ,String outputString);

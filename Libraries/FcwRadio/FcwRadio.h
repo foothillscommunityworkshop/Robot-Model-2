@@ -7,8 +7,6 @@ bool SendCommand(char* command);
 
 String GetSlaveCommand();
 void SetSlaveCommand(String command);
-
-int GetMoveCommand();
-int GetMoveTimer();
+String GetMoveCommand();
 
 #endif

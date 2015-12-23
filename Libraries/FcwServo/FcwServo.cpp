@@ -1,6 +1,7 @@
 #include "FcwServo.h"
 #include <Servo360.h>
 #include "Arduino.h"
+#include "FcwHelper.h"
 
 Servo Right;
 Servo Left;
@@ -63,8 +64,10 @@ void Run(int FB) {
 
 void ProcessMove(int moveCommand)
 {
+    DebugOutput("ProcessMove:",String(moveCommand));
     if(moveCommand >= 2 && moveCommand < 3)
     {
+        
         Run(moveCommand);
     }
     else if(moveCommand > 2)
