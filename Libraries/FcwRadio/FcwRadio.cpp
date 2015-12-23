@@ -82,18 +82,21 @@ String GetSlaveCommand()
 }
 
 
-String GetMoveCommand()
+int GetMoveCommand()
 {
     
     //Parse out the move command.
     String moveCommand = slaveCommand.substring(slaveCommand.indexOf(':'),slaveCommand.length());
     
-    //Test for a NULL command
-    if(moveCommand != "NULL")
+    //Convert command to int
+    int moveInt = moveCommand.toInt();
+    
+    //Test for a valid command
+    if(moveInt > 0)
     {
-        return moveCommand;
+        return moveInt;
     }
-    return "";
+    return 1;
     
 }
 

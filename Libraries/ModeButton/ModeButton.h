@@ -3,5 +3,5 @@
 
 void ModeButtonSetup(int buttonPin);
 int GetButtonCount();
-
+void SetButtonCount(int count);
 #endif

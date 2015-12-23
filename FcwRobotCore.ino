@@ -17,9 +17,10 @@
  *     String GetMoveCommand();
  *     int GetMoveTimer();
  *     
- *     //Sample move command A:F
+ *     //Sample move command A:1
  *     
  */
+
 
 #include "PiezoBuzzer.h"
 #include "PingSensor.h"
@@ -28,7 +29,7 @@
 #include "FcwServo.h"
 #include "FcwHelper.h"
 
-
+bool debugMode = true;
 
 //Pin Senor 
 const int EchoPin = 2;
@@ -56,14 +57,13 @@ const int NOCOMMANDMODE = 0;
 const int MASTERMODE = 1;
 const int SLAVEMODE = 2;
 
-//Create Buzzer object
-PiezoBuzzer piezoBuzzer(BuzzerPin);
+
 
 void setup() {
   // put your setup code here, to run once:
-
- //Onboard LED
-  pinMode(13, OUTPUT);
+ 
+ //Setup PiezoBuzzer
+ PiezoBuzzerSetup(BuzzerPin);
 
  //Setup ModeButton 
  ModeButtonSetup(ModeButton);
@@ -76,52 +76,55 @@ void setup() {
 
  //Setup the Pin sensor for use. 
  PingSensorSetup(TrigPin,EchoPin);
+
+ //Setup debug mode
+ DebugSetUp(debugMode);
+
+ DebugOutput("Setup Complete","");
    
-  Serial.begin (115200);  
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
 
-//Temp here for testing output  
-Serial.print("SlaveCommand:");
-Serial.println(GetSlaveCommand());
-//Temp here for testing output 
-Serial.print("Button:");
-Serial.println(GetButtonCount());
-
+    DebugOutput("SlaveCommand:",GetSlaveCommand());
+    DebugOutput("ButtonCount:",String(GetButtonCount()));
 
   if( GetButtonCount() == NOCOMMANDMODE)
   {
     if(GetSlaveCommand() == FREERANGE)//We just moving at will
     {
+      DebugOutput("FreeRangeMode","");
       FreeRangeMode();
     }
     else if(GetSlaveCommand() == DANCE)//We are listening for commands
     {
-       DanceMode();
+       DebugOutput("DanceMode","");
+       
+       int moveInt = GetMoveCommand(); 
+       DebugOutput("MoveCommand:",String(GetMoveCommand()));
+       
+       DanceMode(moveInt);       
     }
     else if(GetSlaveCommand() == MODE3)
     {
-       Serial.println("Mode3");
-       // piezoBuzzer.Beep(1);
+       DebugOutput("Mode3","");
+       Beep(1);
     }
     else
     {
-       Serial.println("Mode ELSE ");
-       //Beep ?
+      DebugOutput("Outer Else Mode","");
     }
   }
   else if(GetButtonCount() == MASTERMODE) //We are the moster now
   {
-    Serial.println("Master Mode"); 
+     DebugOutput("MasterMode","");
     //Lets send some commands and Dance
      MasterMode();
   }
   else
   {
-    Serial.print("ButtonCount ELSE OUTLOOP:");
-    Serial.println(GetButtonCount());
+    DebugOutput("Outer Else Loop ButtonCount:",String(GetButtonCount()));
   }
   
   
@@ -129,11 +132,11 @@ Serial.println(GetButtonCount());
 }
 
 
-
+//For testing only
 void programMasterBot()
 {       
   //Create and send 3 different letters as slave commands.       
-  SendCommand("A:F[100]");
+  SendCommand("A:1");
   delay(500);
   SendCommand("B");
   delay(500);
