@@ -16,10 +16,10 @@ String slaveCommand;
 void check_radio()
 {
     //Store the reg item
-    //uint8_t oldSREG = SREG;
+    uint8_t oldSREG = SREG;
     
-    //Disable Interrupts while we are listen
-    //cli ();
+    //Disable Interrupts while we are listen/
+    cli ();
     
     //If Radio is avaiable we processed.
     if (radio.available())
@@ -29,13 +29,12 @@ void check_radio()
         uint8_t numBytes = radio.read(buf, sizeof(buf));
         
         //Need to figure out what we need to do here for a output.
-        String TempString = String(buf);
-        slaveCommand = ( String)TempString;
+        slaveCommand = String(buf);
      
     }
    // sei ();
     //Assign the reg the saved items.
-  //  SREG = oldSREG;
+    SREG = oldSREG;
 }
 
 void SetSlaveCommand(String command)
@@ -48,12 +47,16 @@ bool SendCommand(char* command)
 {
     //If we are sending command then we want to discount the Interrupt or we
     // will not be able to send data.
-    detachInterrupt(radioInterrupt);
+    detachInterrupt(radioInterrupt); //I wounder if we BroadCast if we need to detach the interrupt.
     
     //We are broadcasting this instead of sending. as its a send and forget.
     //We might want to try each as we could test against if ayone is reciveing and turn off master if no one is. 
-    bool sent = radio.broadcast(command);
-  //  bool sent = radio.send(0xD2, command);
+ //   bool sent = radio.broadcast(command); //Broadcast seem to not work all the time.
+    bool sent = radio.send(0xD2, command);
+    
+    
+    //Reattach the interrupt because we might not be the master the next round.
+    attachInterrupt(radioInterrupt, check_radio, LOW);
     return sent;
 }
 
