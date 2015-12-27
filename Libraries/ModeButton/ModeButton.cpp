@@ -9,6 +9,7 @@ volatile long diffTime;
 
 //The timer out for the button to being pressed.
 int MAXTIME = 10000;
+const int DebounceTime = 200; //Button debounce milliseconds
 
 void ModeButtonSetup(int buttonPin)
 {
@@ -33,10 +34,15 @@ void ModeButtonSetup(int buttonPin)
 
 ISR (PCINT0_vect) {
     // handle pin change interrupt for D8 to D13 here
+    static unsigned long Time = 0;
+    unsigned long Now = millis();
+    
     
     //This only does something if the Button pin is HIGH.
-    if(digitalRead(_buttonPin) == HIGH)
+    if(digitalRead(_buttonPin) == HIGH && (Now - Time) >= DebounceTime)
     {
+        Time = Now;
+        
         //Get the CurrentTime
        long currentTime = millis();
         

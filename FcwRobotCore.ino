@@ -132,16 +132,6 @@ void loop() {
 }
 
 
-//For testing only
-void programMasterBot()
-{       
-  //Create and send 3 different letters as slave commands.       
-  SendCommand("A:1");
-  delay(500);
-  SendCommand("B");
-  delay(500);
-  SendCommand("C");
-}
 
 
 

@@ -1,7 +1,7 @@
 #include "FcwServo.h"
 #include <Servo360.h>
 #include "Arduino.h"
-#include "FcwHelper.h"
+//#include "FcwHelper.h"
 
 Servo Right;
 Servo Left;
@@ -17,8 +17,8 @@ void FcwServoSetup(int RightPin, int LeftPin)
     Right.attach(RightPin);  // attaches the right servo to the servo object
     Left.attach(LeftPin);  // attaches the left servo to the servo object
     
-    digitalWrite(RightPin, LOW);
-    digitalWrite(LeftPin, LOW);
+  //  digitalWrite(RightPin, LOW);
+  //  digitalWrite(LeftPin, LOW);
 }
 
 
@@ -64,7 +64,7 @@ void Run(int FB) {
 
 void ProcessMove(int moveCommand)
 {
-    DebugOutput("ProcessMove:",String(moveCommand));
+  //  DebugOutput("ProcessMove:",String(moveCommand));
     if(moveCommand >= 2 && moveCommand < 3)
     {
         
