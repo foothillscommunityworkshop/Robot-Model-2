@@ -1,14 +1,14 @@
 #include <ModeButton.h>
 #include <Arduino.h>
+#include "FcwHelper.h"
 
 
 int _buttonPin;
 volatile int buttonCounter = 0;
-volatile long StartTime;
-volatile long diffTime;
+
 
 //The timer out for the button to being pressed.
-int MAXTIME = 10000;
+int ButtonTimerOut = 2000;
 const int DebounceTime = 200; //Button debounce milliseconds
 
 void ModeButtonSetup(int buttonPin)
@@ -31,53 +31,47 @@ void ModeButtonSetup(int buttonPin)
     
 }
 
+volatile unsigned long Time;
+volatile long startTime;
 
 ISR (PCINT0_vect) {
     // handle pin change interrupt for D8 to D13 here
-    static unsigned long Time = 0;
+  //  static unsigned long Time = 0;
     unsigned long Now = millis();
     
-    
+   
     //This only does something if the Button pin is HIGH.
     if(digitalRead(_buttonPin) == HIGH && (Now - Time) >= DebounceTime)
     {
         Time = Now;
-        
-        //Get the CurrentTime
-       long currentTime = millis();
-        
-            //Get the difference
-            diffTime = currentTime - StartTime;
-        
-            //See if the diffence is less than the max amount of time if so we are still in
-            // within the time limit of the last pin press. If so then increase the count up to a max
-            // of 4 If the time limit is exceeded, then reset the button to 0.
-            if(diffTime < MAXTIME)
-            {
-                if(buttonCounter < 4)
-                {
-                    buttonCounter++;
-                }
-                
-            }
-            else
-            {
-                StartTime = currentTime;
-                buttonCounter = 0;
-            }
+        if(buttonCounter < 4)
+        {
+            buttonCounter++;
 
+            if(buttonCounter == 1)
+            {
+                startTime = Now;
+            }
+        }
+      
     }
     
     
     
 } // end of PCINT0_vect
 
+
 int GetButtonCount()
 {
-    //Ensuring that only a valid button count is returned.
-    if(buttonCounter >= 0)
+    if(buttonCounter > 0)
     {
-        return buttonCounter;
+        unsigned long Now = millis();
+        
+        if((Now - startTime) >= ButtonTimerOut)
+        {
+            return buttonCounter;
+        }
+        
     }
     return 0;
 }

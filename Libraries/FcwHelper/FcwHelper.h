@@ -8,6 +8,6 @@ void MasterMode();
 void DanceMode();
 void DanceMoveProcessing();
 void ResetToStartUpMode();
-void DebugSetUp(bool setup);
-void DebugOutput(String  stringOutType ,String outputString);
+void DebugSetUp(bool setup, int debugLevel = 1);
+void DebugOutput(String  stringOutType ,String outputString, int debugLevel = 1);
 #endif

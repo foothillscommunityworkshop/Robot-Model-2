@@ -9,6 +9,7 @@
 //The distance from object before we change direction
 const int TooClose = 300;
 const int BeepCommand = 5;
+int _debugLevel;
 
 typedef  struct {
     String DMove; //Movement Id
@@ -95,18 +96,22 @@ void DanceMode()
   
 }
 
-void DebugSetUp(bool setup)
+void DebugSetUp(bool setup, int debugLevel)
 {
     if(setup)
     {
         _debugMode = setup;
         Serial.begin (115200);
     }
+    
+    _debugLevel = debugLevel;
+    
+    
 }
 
-void DebugOutput(String  stringOutType ,String outputString)
+void DebugOutput(String  stringOutType ,String outputString, int debugLevel)
 {
-    if(_debugMode)
+    if(_debugMode && debugLevel >= _debugLevel)
     {
         Serial.print(stringOutType);
         Serial.println(outputString);
@@ -117,7 +122,7 @@ void DebugOutput(String  stringOutType ,String outputString)
 void ResetToStartUpMode()
 {
     
-    DebugOutput("Reset to StartMode","");
+    DebugOutput("Reset to StartMode","",4);
     //Reset the robot back to startup mode.
     SetButtonCount(0); //Set button count to 0
     SetSlaveCommand("A"); //Set the Command to A which is Self Master.
