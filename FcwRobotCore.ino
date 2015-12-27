@@ -1,5 +1,6 @@
 /*
  * PiezoBuzzer:
+ *    PiezoBuzzerSetup(BuzzerPin);
  *    Beep(int amount);
  *    
  * PingSensor:   
@@ -14,10 +15,7 @@
  *     RadioSetup(radioPinCe, radioPinCs);
  *     SendCommand(String);
  *     String GetSlaveCommand();
- *     String GetMoveCommand();
- *     int GetMoveTimer();
  *     
- *     //Sample move command A:1
  *     
  */
 
@@ -87,9 +85,6 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-
-//    DebugOutput("SlaveCommand:",GetSlaveCommand());
-//    DebugOutput("ButtonCount:",String(GetButtonCount()));
 
   if( GetButtonCount() == NOCOMMANDMODE)
   {

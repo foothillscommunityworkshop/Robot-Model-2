@@ -11,8 +11,8 @@ const int TooClose = 300;
 const int BeepCommand = 5;
 
 typedef  struct {
-    String DMove;
-    int DNum;
+    String DMove; //Movement Id
+    int DNum; //Delay for the movement
 } DanceMove;
 
 // 0 = Just filler for delay,  1-4 = moves, 5 = beep
@@ -63,7 +63,8 @@ void MasterMode()
 void DanceMoveProcessing()
 {
     //Beep of entering the Dance Move process
-    Beep(3, 300);
+    Beep(3);
+    
     for (int i; i < (sizeof(DMoves)/sizeof(DanceMove)); i++)
     {
         DanceMove move1 = DMoves[i];
@@ -81,7 +82,7 @@ void DanceMoveProcessing()
     }
     
     //Beep on exiting the dancing moves process
-    Beep(3, 300);
+    Beep(3);
 }
 
 void DanceMode()
@@ -118,8 +119,8 @@ void ResetToStartUpMode()
     
     DebugOutput("Reset to StartMode","");
     //Reset the robot back to startup mode.
-    SetButtonCount(0);
-    SetSlaveCommand("A");
+    SetButtonCount(0); //Set button count to 0
+    SetSlaveCommand("A"); //Set the Command to A which is Self Master.
    
 }
 
