@@ -12,6 +12,8 @@ const int DBackward = 2;
 const int DRight = 3;
 const int DLeft = 4;
 
+const int delayTurn = 300;
+
 void FcwServoSetup(int RightPin, int LeftPin)
 {
     Right.attach(RightPin);  // attaches the right servo to the servo object
@@ -34,13 +36,27 @@ void Turn(int RL){
     }
 }
 
+//Servo Avoid obstacle function
+void AvoidObstacle()
+{
+    //backup for XX amount of millis's then turn.
+    Run(2);
+    delay(delayTurn);
+    Turn(DLeft);
+    delay(delayTurn);
+}
+
 //Servo turn randomly right or left function
-void TurnRandom() {
+void TurnRandom()
+{
+ 
     if (random(1,10001) > 5000) {
         Turn(DRight);
+        delay(delayTurn);
     }
     else {
         Turn(DLeft);
+        delay(delayTurn);
     }
 }
 

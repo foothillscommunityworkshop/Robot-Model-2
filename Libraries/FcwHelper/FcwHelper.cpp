@@ -21,11 +21,12 @@ void FreeRangeMode()
 {
     if (CurrentDuration() < TooClose)
     {
-        //Turn Random
-        TurnRandom();
         Beep(1);
         
-        DebugOutput("Turn","");
+        //Avoid Obstacle()
+        AvoidObstacle();
+        
+        DebugOutput("AvoidObstacle","");
         DebugOutput("Dur:",String(CurrentDuration()));
     }
     else
@@ -42,8 +43,6 @@ void FreeRangeMode()
 
 void MasterMode()
 {
-    //Beep Enter master mode
-  //  Beep(3);
     
     DebugOutput("Enter MasterMode","");
 
@@ -51,13 +50,8 @@ void MasterMode()
     bool sent = SendCommand("B");
     
     DanceMoveProcessing();
-
-    //Beep to show leaving Master Mode
-   // Beep(6);
  
 
-    
-    
     //Exit Master mode after the Dance is over
     ResetToStartUpMode();
 
@@ -65,14 +59,17 @@ void MasterMode()
 
 void DanceMoveProcessing()
 {
-    Beep(3);
+    //Beep of entering the Dance Move process
+    Beep(3, 300);
     for (int i; i < 4; i++)
     {
         DanceMove move1 = DMoves[i];
         ProcessMove(move1.DMove.toInt());
         delay(move1.DNum);
     }
-    Beep(6);
+    
+    //Beep on exiting the dancing moves process
+    Beep(6, 300);
 }
 
 void DanceMode()
