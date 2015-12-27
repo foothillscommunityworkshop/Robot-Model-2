@@ -8,12 +8,15 @@
 
 //The distance from object before we change direction
 const int TooClose = 300;
+const int BeepCommand = 5;
 
 typedef  struct {
     String DMove;
     int DNum;
 } DanceMove;
-const DanceMove DMoves[] = {{"1", 2000}, {"2",1500}, {"3",1500}, {"4",1500}};
+
+// 0 = Just filler for delay,  1-4 = moves, 5 = beep
+const DanceMove DMoves[] = {{"0",2000},{"5", 500},{"1", 2000}, {"2",1500}, {"3",1500}, {"4",1500},{"5", 500}};
 
 bool _debugMode = false;
 
@@ -49,9 +52,9 @@ void MasterMode()
     //Send Command to the Slave bots
     bool sent = SendCommand("B");
     
+    //Process the dance move for the master
     DanceMoveProcessing();
  
-
     //Exit Master mode after the Dance is over
     ResetToStartUpMode();
 
@@ -61,15 +64,24 @@ void DanceMoveProcessing()
 {
     //Beep of entering the Dance Move process
     Beep(3, 300);
-    for (int i; i < 4; i++)
+    for (int i; i < (sizeof(DMoves)/sizeof(DanceMove)); i++)
     {
         DanceMove move1 = DMoves[i];
-        ProcessMove(move1.DMove.toInt());
+        
+        //We only looking for movement Int's from 1-4 for movement
+        if(move1.DMove.toInt() > 0 && move1.DMove.toInt() <= 4)
+        {
+            ProcessMove(move1.DMove.toInt());
+        }
+        else if(move1.DMove.toInt() == BeepCommand) //5 repersents a beep command
+        {
+            Beep(1);
+        }
         delay(move1.DNum);
     }
     
     //Beep on exiting the dancing moves process
-    Beep(6, 300);
+    Beep(3, 300);
 }
 
 void DanceMode()

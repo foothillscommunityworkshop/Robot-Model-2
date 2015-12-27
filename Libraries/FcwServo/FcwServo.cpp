@@ -1,7 +1,7 @@
 #include "FcwServo.h"
 #include <Servo360.h>
 #include "Arduino.h"
-//#include "FcwHelper.h"
+#include "FcwHelper.h"
 
 Servo Right;
 Servo Left;
@@ -39,6 +39,7 @@ void Turn(int RL){
 //Servo Avoid obstacle function
 void AvoidObstacle()
 {
+    DebugOutput("AvoidObstacle","");
     //backup for XX amount of millis's then turn.
     Run(2);
     delay(delayTurn);
@@ -80,7 +81,7 @@ void Run(int FB) {
 
 void ProcessMove(int moveCommand)
 {
-  //  DebugOutput("ProcessMove:",String(moveCommand));
+    DebugOutput("ProcessMove:",String(moveCommand));
     if(moveCommand >= 2 && moveCommand < 3)
     {
         
