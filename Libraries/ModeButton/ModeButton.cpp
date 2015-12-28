@@ -5,6 +5,8 @@
 
 int _buttonPin;
 volatile int buttonCounter = 0;
+volatile unsigned long Time;
+volatile long startTime;
 
 
 //The timer out for the button to being pressed.
@@ -31,8 +33,7 @@ void ModeButtonSetup(int buttonPin)
     
 }
 
-volatile unsigned long Time;
-volatile long startTime;
+
 
 ISR (PCINT0_vect) {
     // handle pin change interrupt for D8 to D13 here

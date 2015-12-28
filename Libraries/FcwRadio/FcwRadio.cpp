@@ -84,10 +84,16 @@ String GetSlaveCommand()
     return "A";
 }
 
-String GetMoveCommand()
+int GetMoveCommand()
 {
     //Parse out the move command.
     String moveCommand = slaveCommand.substring(slaveCommand.indexOf(':'),slaveCommand.length());
-    return moveCommand;
+    
+    int MoveItemInt = moveCommand.toInt();
+    if(MoveItemInt >= 0)
+    {
+        return MoveItemInt;
+    }
+    return 0;
 }
 
