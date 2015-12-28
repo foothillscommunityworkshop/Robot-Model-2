@@ -1,4 +1,5 @@
 /*
+ * 
  * PiezoBuzzer:
  *    PiezoBuzzerSetup(BuzzerPin);
  *    Beep(int amount);
@@ -26,8 +27,12 @@
 #include "FcwRadio.h"
 #include "FcwServo.h"
 #include "FcwHelper.h"
+#include "FcwDebug.h"
 
+//Debug Items
 bool debugMode = true;
+bool debugToSdCard = true;
+const int chipSelect = A0;
 
 //Pin Senor 
 const int EchoPin = 2;
@@ -78,6 +83,7 @@ void setup() {
 
  //Setup debug mode
  DebugSetUp(debugMode);
+ SDCardSetup(chipSelect, debugToSdCard); 
 
  DebugOutput("Setup Complete","");
    

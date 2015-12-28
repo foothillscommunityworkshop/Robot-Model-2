@@ -5,6 +5,7 @@
 #include "ModeButton.h"
 #include "PingSensor.h"
 #include "PiezoBuzzer.h"
+#include "FcwDebug.h"
 
 //The distance from object before we change direction
 const int TooClose = 300;
@@ -103,6 +104,7 @@ void DebugSetUp(bool setup, int debugLevel)
         _debugMode = setup;
         Serial.begin (115200);
     }
+
     
     _debugLevel = debugLevel;
     
@@ -111,10 +113,20 @@ void DebugSetUp(bool setup, int debugLevel)
 
 void DebugOutput(String  stringOutType ,String outputString, int debugLevel)
 {
-    if(_debugMode && debugLevel >= _debugLevel)
+    if(debugLevel >= _debugLevel)
     {
-        Serial.print(stringOutType);
-        Serial.println(outputString);
+        if(_debugMode)
+        {
+            Serial.print(stringOutType);
+            Serial.println(outputString);
+        }
+        
+        if(CardStoreEnabled())
+        {
+            WriteToCard(stringOutType,outputString);
+        }
+        
+                    
     }
  
 }
