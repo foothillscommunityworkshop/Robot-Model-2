@@ -31,7 +31,7 @@ typedef  struct {
 
  DanceMove DanceMoveList[DanceListArray][DanceListMoves] = {
     {
-        {DelayFiller,2000},{BeepCommand, 500},{DForward, 2000}, {DBackward,1500}, {DRight,1500}, {DLeft,1000},{BeepCommand, 5000},{EndCommand, 500}
+        {DelayFiller,2000},{BeepCommand, 500},{DForward, 2000}, {DBackward,1500}, {DRight,1500}, {DLeft,1000},{BeepCommand, 500},{EndCommand, 500}
 
     },
     {

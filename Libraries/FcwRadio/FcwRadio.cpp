@@ -72,15 +72,21 @@ void RadioSetup(int cePin, int csPin)
     attachInterrupt(radioInterrupt, check_radio, LOW);
 }
 
+unsigned long firstCommandTimer;
+int MaxWaitTime = 5000;
+bool firstCommand = true;
+
 String GetSlaveCommand()
 {
+    unsigned long Now = millis();
+    
     //Parse the command from the received string.
     String command  = slaveCommand.substring(0, 1);
     
     //Test to make sure we hae an command if not then send the freeRange command.
     if(command.length() > 0)
     {
-        return command;
+       return command;
     }
     return "A";
 }
