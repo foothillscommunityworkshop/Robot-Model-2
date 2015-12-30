@@ -2,6 +2,7 @@
 #include <SPI.h>
 #include <NRF24.h>
 //#include <Arduino.h>
+#include "FcwHelper.h"
 
 //volatile
 
@@ -87,13 +88,24 @@ String GetSlaveCommand()
 int GetMoveCommand()
 {
     //Parse out the move command.
-    String moveCommand = slaveCommand.substring(slaveCommand.indexOf(':'),slaveCommand.length());
+    String moveCommand = slaveCommand.substring(slaveCommand.indexOf(':')+1,slaveCommand.indexOf('['));
     
     int MoveItemInt = moveCommand.toInt();
+
+
     if(MoveItemInt >= 0)
     {
         return MoveItemInt;
     }
     return 0;
+}
+
+int GetMoveTimer()
+{
+    //Parse the int timer from the string
+    String moveTimerString = slaveCommand.substring(slaveCommand.indexOf('[') + 1 ,slaveCommand.indexOf(']'));
+    //Convert the string into a int.
+    int moveTimerInt = moveTimerString.toInt();
+    return moveTimerInt;
 }
 

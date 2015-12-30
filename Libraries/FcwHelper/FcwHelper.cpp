@@ -13,28 +13,32 @@ const int BeepCommand = 5;
 int _debugLevel;
 
 typedef  struct {
-    String DMove; //Movement Id
+    int DMove; //Movement Id
     int DNum; //Delay for the movement
 } DanceMove;
 
 #define DanceListArray 3
-#define DanceListMoves 7
+#define DanceListMoves 8
 
+#define DelayFiller  0
+#define DForward 1
+#define DBackward 2
+#define DRight 3
+#define DLeft 4
+#define BeepCommand 5
+#define EndCommand 6
 
-// 0 = Just filler for delay,  1-4 = moves, 5 = beep
-//const DanceMove  DMoves[] = {
-//    {"0",2000},{"5", 500},{"1", 2000}, {"2",1500}, {"3",1500}, {"4",1500},{"5", 500}
-//};
 
  DanceMove DanceMoveList[DanceListArray][DanceListMoves] = {
     {
-        {"0",2000},{"5", 500},{"1", 2000}, {"2",1500}, {"3",1500}, {"4",1500},{"5", 500}
+        {DelayFiller,2000},{BeepCommand, 500},{DForward, 2000}, {DBackward,1500}, {DRight,1500}, {DLeft,1000},{BeepCommand, 5000},{EndCommand, 500}
+
     },
     {
-        {"0",2000},{"3", 500},{"4", 500}, {"1",200}, {"4",1000}, {"2",800},{"1", 500}
+        {DelayFiller,2000},{DRight, 500},{DLeft, 500}, {DForward,200}, {DLeft,1000}, {DBackward,800},{DForward, 800},{EndCommand, 500}
     },
     {
-        {"0",2000},{"5", 500},{"3", 2000}, {"2",500}, {"4",1500}, {"3",1500},{"5", 500}
+        {DelayFiller,2000},{BeepCommand, 500},{DRight, 2000}, {DBackward,500}, {DLeft,1500}, {DRight,1500},{BeepCommand, 300},{EndCommand, 500}
     },
 };
 
@@ -73,60 +77,65 @@ void MasterMode()
     //Random number from 1-3 (tech 0-2)
     int randomDanceMove = (rand() % DanceListArray);
     
-    //Convert string command to char* command to send.
-    String command = String("B:"+ String(randomDanceMove));
-    char* commandtoSend;
-    command.toCharArray(commandtoSend, sizeof(command));
     
-    //Send Command to the Slave bots
-    bool sent = SendCommand(commandtoSend);
-    
-    //Process the dance move for the master
-    DanceMoveProcessing(randomDanceMove);
+    for (int i; i < (sizeof(DanceMoveList[randomDanceMove])/sizeof(DanceMove)); i++)
+    {
+        DanceMove move1 = DanceMoveList[randomDanceMove][i];
+        
+        //Convert string command to char* command to send.
+        String command = "B";
+        command.concat(":");
+        command.concat(String(move1.DMove));
+        command.concat("[");
+        command.concat(String(move1.DNum));
+        command.concat("]");
+        
+        char commandToSend[command.length() + 1];
+        command.toCharArray(commandToSend, command.length() + 1);
+        
+        //Send Command to the Slave bots
+        bool sent = SendCommand(commandToSend);
+        
+        //Debug item
+        DebugOutput("DanceMove SendCommand:",commandToSend);
+        
+        //Process the dance move for the master
+        DanceMoveProcessing(move1.DMove, move1.DNum);
+        
+    }
  
-    //Exit Master mode after the Dance is over
-    
-    ResetToStartUpMode();
+   
 
 }
 
-void DanceMoveProcessing(int danceMoveItem)
+
+
+void DanceMoveProcessing(int danceMove, int danceTimer)
 {
-    //Beep of entering the Dance Move process
-    Beep(3);
-    
-    
-    
-    DebugOutput("DanceMoveItem:",String(danceMoveItem));
-    
-    for (int i; i < (sizeof(DanceMoveList[danceMoveItem])/sizeof(DanceMove)); i++)
+     DebugOutput("DanceMove Moving"," MoveCommand:" + String(danceMove) + " MoveTimer:" + String(danceTimer));
+
+    //We only looking for movement Int's from 1-4 for movement
+    if(danceMove > 0 && danceMove <= 4 )
     {
-        DanceMove move1 = DanceMoveList[danceMoveItem][i];
-        
-        //We only looking for movement Int's from 1-4 for movement
-        if(move1.DMove.toInt() > 0 && move1.DMove.toInt() <= 4)
-        {
-            ProcessMove(move1.DMove.toInt());
-        }
-        else if(move1.DMove.toInt() == BeepCommand) //5 repersents a beep command
-        {
-            Beep(1);
-        }
-        delay(move1.DNum);
+        ProcessMove(danceMove);
+    }
+    else if(danceMove == BeepCommand) //5 repersents a beep command
+    {
+        Beep(1);
+    }
+    else if(danceMove == EndCommand)
+    {
+        ResetToStartUpMode();
     }
     
-    //Beep on exiting the dancing moves process
-    Beep(3);
+    
+    delay(danceTimer);
 }
+
 
 void DanceMode()
 {
-    DebugOutput("DanceMove Moving","");
-    
-    DanceMoveProcessing(GetMoveCommand());
-    
-    ResetToStartUpMode();
-  
+    DanceMoveProcessing(GetMoveCommand(),GetMoveTimer());
 }
 
 void DebugSetUp(bool setup, int debugLevel)
