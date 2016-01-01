@@ -8,10 +8,12 @@ int _chipSelect;
 bool _storeToCard = false;
 String FileName = "datalog.txt";
 
+bool _displayToLCD = false;
+
 void SDCardSetup(int chipSelect , bool storeToCard)
 {
     _chipSelect = chipSelect;
-    
+   
     if (storeToCard && SD.begin(chipSelect))
     {
         _storeToCard = true;
@@ -22,11 +24,13 @@ void SDCardSetup(int chipSelect , bool storeToCard)
         
     }
     
+    
 }
 
 
 void WriteToCard(String  stringOutType ,String outputString)
 {
+    
     File dataFile = SD.open(FileName, FILE_WRITE);
     if (dataFile)
     {
@@ -34,8 +38,13 @@ void WriteToCard(String  stringOutType ,String outputString)
         dataFile.println(outputString);
         dataFile.close();
     }
+    
 }
 
+bool LcdScreenEnabled()
+{
+    return _displayToLCD;
+}
 
 bool CardStoreEnabled()
 {
